@@ -4,6 +4,8 @@
 
 Внутри работает [yt-dlp](https://github.com/yt-dlp/yt-dlp) в связке с [zapret/tpws](https://github.com/bol-van/zapret) для стабильного соединения с серверами YouTube.
 
+[English version →](README.en.md)
+
 ## Использование
 
 ### Веб-интерфейс
@@ -20,10 +22,10 @@ docker compose up
 
 ```bash
 # Видео (MP4)
-docker run --rm --network=host -v "${PWD}/downloads:/downloads" ghcr.io/olluorg/yt-dlp-dpi:latest "https://www.youtube.com/watch?v=..."
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
 
 # Аудио (MP3)
-docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="-x --audio-format mp3" ghcr.io/olluorg/yt-dlp-dpi:latest "https://www.youtube.com/watch?v=..."
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="-x --audio-format mp3" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
 ```
 
 Файлы сохраняются в папку `./downloads/`.
@@ -65,8 +67,8 @@ docker build -t yt-dlp-dpi .
 **Примеры:**
 
 ```
-GET /download?url=https://www.youtube.com/watch?v=...
-GET /download?url=https://www.youtube.com/watch?v=...&format=mp3
+GET /download?url=https://youtu.be/aqz-KE-bpKQ
+GET /download?url=https://youtu.be/aqz-KE-bpKQ&format=mp3
 ```
 
 **Ответы:**
