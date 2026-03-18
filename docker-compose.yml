@@ -1,0 +1,22 @@
+services:
+  zapret:
+    build: .
+    image: zapret-discord-youtube
+    container_name: zapret
+
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    network_mode: host
+
+    restart: unless-stopped
+
+    environment:
+      - NFQUEUE_NUM=200
+      - TPWS_PORT=1080
+      - SERVER_PORT=8080
+
+    # Для монтирования собственных списков без пересборки:
+    # volumes:
+    #   - ./my-lists/list-general-user.txt:/opt/zapret/lists/list-general-user.txt:ro
