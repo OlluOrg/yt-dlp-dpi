@@ -28,10 +28,18 @@ docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="
 
 Файлы сохраняются в папку `./downloads/`.
 
-## Сборка
+## Готовый образ
 
 ```bash
-docker build -t zapret-discord-youtube .
+docker pull ghcr.io/olluorg/yt-dlp-dpi:latest
+```
+
+Образ автоматически пересобирается при каждом обновлении репозитория.
+
+## Сборка вручную
+
+```bash
+docker build -t yt-dlp-dpi .
 ```
 
 Всё необходимое скачивается автоматически во время сборки.

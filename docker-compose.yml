@@ -1,7 +1,6 @@
 services:
   zapret:
-    build: .
-    image: zapret-discord-youtube
+    image: ghcr.io/olluorg/yt-dlp-dpi:latest
     container_name: zapret
 
     cap_add:
