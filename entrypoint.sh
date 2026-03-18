@@ -169,14 +169,15 @@ for i in $(seq 1 10); do
         echo "[zapret] Try setting a different TPWS_PORT, e.g.: -e TPWS_PORT=18080" >&2
         exit 1
     fi
-    if ss -tlnp 2>/dev/null | grep -q ":${TPWS_PORT}"; then
+    # Проверяем подключением — работает независимо от user namespace
+    if (echo >/dev/tcp/127.0.0.1/${TPWS_PORT}) 2>/dev/null; then
         TPWS_READY=1
         break
     fi
 done
 
 if [[ $TPWS_READY -eq 0 ]]; then
-    echo "[zapret] ERROR: tpws did not bind to port ${TPWS_PORT} within 5 seconds" >&2
+    echo "[zapret] ERROR: tpws did not accept connections on port ${TPWS_PORT} within 5 seconds" >&2
     exit 1
 fi
 echo "[zapret] tpws running (pid=$TPWS_PID, port=$TPWS_PORT)"
