@@ -54,7 +54,7 @@ run_tpws() {
         --socks \
         --bind-addr=127.0.0.1 \
         --split-pos=1 \
-        --disorder=tls
+        --oob=tls
 }
 
 # ─── nfqws NFQUEUE (полная стратегия general.bat, TCP+UDP) ───────────────────
