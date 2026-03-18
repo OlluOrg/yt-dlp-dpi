@@ -40,10 +40,16 @@ RUN chmod +x /usr/local/bin/nfqws /usr/local/bin/tpws
 RUN update-alternatives --set iptables  /usr/sbin/iptables-legacy \
     && update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
-# ─── yt-dlp (standalone binary, Python not required) ──────────────────────────
-RUN curl -fsSL \
-        https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux \
-        -o /usr/local/bin/yt-dlp \
+# ─── yt-dlp (standalone binary, architecture-aware) ───────────────────────────
+ARG TARGETARCH
+RUN case "$TARGETARCH" in \
+        amd64) BINARY=yt-dlp_linux ;; \
+        arm64) BINARY=yt-dlp_linux_aarch64 ;; \
+        arm)   BINARY=yt-dlp_linux_armv7l ;; \
+        *)     BINARY=yt-dlp_linux ;; \
+    esac \
+    && curl -fsSL "https://github.com/yt-dlp/yt-dlp/releases/latest/download/${BINARY}" \
+       -o /usr/local/bin/yt-dlp \
     && chmod +x /usr/local/bin/yt-dlp
 
 VOLUME ["/downloads"]
