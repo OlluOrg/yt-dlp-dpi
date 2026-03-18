@@ -47,14 +47,14 @@ trap cleanup EXIT INT TERM
 # Применяет DPI desync к TCP-соединениям, проходящим через прокси.
 
 run_tpws() {
-    # tpws синтаксис: --split-pos, --disorder, --tlsrec, --oob
-    # (не --dpi-desync — это только nfqws)
+    # TPWS_OPTS управляет стратегией DPI bypass.
+    # Для регионов без DPI (macOS, зарубежные серверы): -e TPWS_OPTS=""
+    # shellcheck disable=SC2086
     tpws \
         --port="$TPWS_PORT" \
         --socks \
         --bind-addr=127.0.0.1 \
-        --split-pos=1 \
-        --oob=tls
+        ${TPWS_OPTS}
 }
 
 # ─── nfqws NFQUEUE (полная стратегия general.bat, TCP+UDP) ───────────────────

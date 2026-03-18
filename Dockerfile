@@ -63,5 +63,6 @@ RUN chmod +x /entrypoint.sh
 ENV NFQUEUE_NUM=200
 ENV TPWS_PORT=18080
 ENV SERVER_PORT=8080
+ENV TPWS_OPTS="--split-pos=1 --oob=tls"
 
 ENTRYPOINT ["/entrypoint.sh"]

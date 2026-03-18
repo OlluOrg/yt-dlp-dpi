@@ -15,6 +15,7 @@ import socketserver
 import subprocess
 import tempfile
 import urllib.parse
+import uuid
 
 TPWS_PORT  = int(os.environ.get("TPWS_PORT",  "1080"))
 SERVER_PORT = int(os.environ.get("SERVER_PORT", "8080"))
@@ -51,9 +52,11 @@ HTML = """\
 class VideoHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
+        req_id = uuid.uuid4().hex[:8]
         parsed = urllib.parse.urlparse(self.path)
 
         if parsed.path == "/":
+            logging.info("[%s] [%s] GET /", req_id, self.client_address[0])
             body = HTML.encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -71,13 +74,14 @@ class VideoHandler(http.server.BaseHTTPRequestHandler):
                 self.send_error(400, "Missing 'url' parameter")
                 return
 
-            self._download_and_send(url, fmt)
+            self._download_and_send(req_id, url, fmt)
             return
 
         self.send_error(404)
 
-    def _download_and_send(self, url: str, fmt: str):
-        self.log_message("download start url=%s format=%s", url, fmt)
+    def _download_and_send(self, req_id: str, url: str, fmt: str):
+        client = self.client_address[0]
+        logging.info("[%s] [%s] request  url=%s format=%s", req_id, client, url, fmt)
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cmd = [
@@ -93,13 +97,16 @@ class VideoHandler(http.server.BaseHTTPRequestHandler):
                 cmd += ["--merge-output-format", "mp4"]
             cmd.append(url)
 
+            logging.info("[%s] [%s] downloading url=%s", req_id, client, url)
             result = subprocess.run(cmd)
             if result.returncode != 0:
+                logging.error("[%s] [%s] download failed url=%s", req_id, client, url)
                 self.send_error(500, "Download failed")
                 return
 
             files = glob.glob(f"{tmpdir}/*")
             if not files:
+                logging.error("[%s] [%s] no output file url=%s", req_id, client, url)
                 self.send_error(500, "No output file produced")
                 return
 
@@ -107,6 +114,8 @@ class VideoHandler(http.server.BaseHTTPRequestHandler):
             filename  = os.path.basename(filepath)
             filesize  = os.path.getsize(filepath)
             mime      = "audio/mpeg" if fmt == "mp3" else "video/mp4"
+
+            logging.info("[%s] [%s] sending   file=%s size=%d", req_id, client, filename, filesize)
 
             self.send_response(200)
             self.send_header("Content-Type", mime)
@@ -123,13 +132,15 @@ class VideoHandler(http.server.BaseHTTPRequestHandler):
                     try:
                         self.wfile.write(chunk)
                     except (BrokenPipeError, ConnectionResetError):
+                        logging.warning("[%s] [%s] connection lost during transfer file=%s", req_id, client, filename)
                         break
 
-        self.log_message("download done  url=%s file=%s size=%d", url, filename, filesize)
-        # tmpdir удаляется автоматически при выходе из блока with
+            logging.info("[%s] [%s] done      file=%s size=%d", req_id, client, filename, filesize)
+
+        logging.info("[%s] [%s] deleted   file=%s", req_id, client, filename)
 
     def log_message(self, fmt, *args):
-        logging.info(fmt, *args)
+        pass  # отключаем стандартный лог BaseHTTPRequestHandler
 
 
 if __name__ == "__main__":

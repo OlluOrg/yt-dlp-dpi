@@ -20,12 +20,24 @@ docker compose up
 
 ### Командная строка
 
+**Linux / Raspberry Pi:**
 ```bash
 # Видео (MP4)
 docker run --rm --network=host -v "${PWD}/downloads:/downloads" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
 
 # Аудио (MP3)
 docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="-x --audio-format mp3" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
+```
+
+**Windows (WSL2):**
+```bash
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
+```
+
+**macOS:**
+```bash
+# На macOS не нужен DPI bypass — отключаем TPWS_OPTS
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e TPWS_OPTS="" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
 ```
 
 Файлы сохраняются в папку `./downloads/`.
@@ -91,7 +103,8 @@ Content-Length: <размер в байтах>
 | Переменная | По умолчанию | Описание |
 |---|---|---|
 | `SERVER_PORT` | `8080` | Порт веб-интерфейса |
-| `TPWS_PORT` | `1080` | Порт внутреннего SOCKS5-прокси |
+| `TPWS_PORT` | `18080` | Порт внутреннего SOCKS5-прокси |
+| `TPWS_OPTS` | `--split-pos=1 --oob=tls` | Опции DPI bypass. Для macOS/зарубежных серверов: `""` |
 | `OUTPUT_DIR` | `/downloads` | Папка для сохранения файлов |
 | `YT_DLP_OPTS` | — | Дополнительные флаги yt-dlp |
 

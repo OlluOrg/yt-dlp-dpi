@@ -20,12 +20,24 @@ Paste a link, choose a format — the file will download directly in the browser
 
 ### Command line
 
+**Linux / Raspberry Pi:**
 ```bash
 # Video (MP4)
 docker run --rm --network=host -v "${PWD}/downloads:/downloads" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
 
 # Audio (MP3)
 docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="-x --audio-format mp3" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
+```
+
+**Windows (WSL2):**
+```bash
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
+```
+
+**macOS:**
+```bash
+# No DPI bypass needed on macOS — disable TPWS_OPTS
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e TPWS_OPTS="" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
 ```
 
 Files are saved to the `./downloads/` folder.
@@ -91,7 +103,8 @@ Content-Length: <size in bytes>
 | Variable | Default | Description |
 |---|---|---|
 | `SERVER_PORT` | `8080` | Web interface port |
-| `TPWS_PORT` | `1080` | Internal SOCKS5 proxy port |
+| `TPWS_PORT` | `18080` | Internal SOCKS5 proxy port |
+| `TPWS_OPTS` | `--split-pos=1 --oob=tls` | DPI bypass options. For macOS/servers outside Russia: `""` |
 | `OUTPUT_DIR` | `/downloads` | Output directory for saved files |
 | `YT_DLP_OPTS` | — | Extra yt-dlp flags |
 
