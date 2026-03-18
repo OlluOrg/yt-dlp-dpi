@@ -53,9 +53,6 @@ run_tpws() {
         --port="$TPWS_PORT" \
         --socks \
         --bind-addr=127.0.0.1 \
-        --filter-tcp=443 \
-        --filter-l7=tls \
-        --tlsrec=sni \
         --split-pos=1 \
         --disorder=tls
 }
