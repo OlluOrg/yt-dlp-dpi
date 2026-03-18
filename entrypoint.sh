@@ -169,7 +169,7 @@ for i in $(seq 1 10); do
         echo "[zapret] Try setting a different TPWS_PORT, e.g.: -e TPWS_PORT=18080" >&2
         exit 1
     fi
-    if ss -tlnp 2>/dev/null | grep -q ":${TPWS_PORT} "; then
+    if ss -tlnp 2>/dev/null | grep -q ":${TPWS_PORT}"; then
         TPWS_READY=1
         break
     fi
