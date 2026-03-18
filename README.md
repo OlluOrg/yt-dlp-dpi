@@ -65,6 +65,46 @@ docker build -t yt-dlp-dpi .
 
 ---
 
+### `GET /info`
+
+Возвращает метаданные видео без скачивания.
+
+**Параметры:** `url` (обязательный)
+
+**Пример:** `GET /info?url=https://youtu.be/aqz-KE-bpKQ`
+
+**Ответ `200`:**
+```json
+{
+  "title": "Rick Astley - Never Gonna Give You Up",
+  "duration": 213,
+  "uploader": "Rick Astley",
+  "thumbnail": "https://..."
+}
+```
+
+---
+
+### `GET /search`
+
+Ищет видео на YouTube и возвращает первый результат.
+
+**Параметры:** `query` (обязательный)
+
+**Пример:** `GET /search?query=never+gonna+give+you+up`
+
+**Ответ `200`:**
+```json
+{
+  "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+  "title": "Rick Astley - Never Gonna Give You Up",
+  "duration": 213,
+  "uploader": "Rick Astley"
+}
+```
+
+---
+
 ### `GET /download`
 
 Скачивает видео или аудио и отдаёт файл напрямую в ответе.
@@ -75,12 +115,15 @@ docker build -t yt-dlp-dpi .
 |---|---|---|---|---|
 | `url` | да | любая ссылка yt-dlp | — | Ссылка на видео |
 | `format` | нет | `mp4`, `mp3` | `mp4` | Формат файла |
+| `start` | нет | `HH:MM:SS` | — | Начало обрезки |
+| `end` | нет | `HH:MM:SS` | — | Конец обрезки |
 
 **Примеры:**
 
 ```
 GET /download?url=https://youtu.be/aqz-KE-bpKQ
 GET /download?url=https://youtu.be/aqz-KE-bpKQ&format=mp3
+GET /download?url=https://youtu.be/aqz-KE-bpKQ&start=00:01:00&end=00:02:30
 ```
 
 **Ответы:**

@@ -65,6 +65,46 @@ Web form for downloading via browser.
 
 ---
 
+### `GET /info`
+
+Returns video metadata without downloading.
+
+**Parameters:** `url` (required)
+
+**Example:** `GET /info?url=https://youtu.be/aqz-KE-bpKQ`
+
+**Response `200`:**
+```json
+{
+  "title": "Rick Astley - Never Gonna Give You Up",
+  "duration": 213,
+  "uploader": "Rick Astley",
+  "thumbnail": "https://..."
+}
+```
+
+---
+
+### `GET /search`
+
+Searches YouTube and returns the first result.
+
+**Parameters:** `query` (required)
+
+**Example:** `GET /search?query=never+gonna+give+you+up`
+
+**Response `200`:**
+```json
+{
+  "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+  "title": "Rick Astley - Never Gonna Give You Up",
+  "duration": 213,
+  "uploader": "Rick Astley"
+}
+```
+
+---
+
 ### `GET /download`
 
 Downloads video or audio and returns the file directly in the response.
@@ -75,12 +115,15 @@ Downloads video or audio and returns the file directly in the response.
 |---|---|---|---|---|
 | `url` | yes | any yt-dlp supported URL | — | Video URL |
 | `format` | no | `mp4`, `mp3` | `mp4` | Output format |
+| `start` | no | `HH:MM:SS` | — | Trim start time |
+| `end` | no | `HH:MM:SS` | — | Trim end time |
 
 **Examples:**
 
 ```
 GET /download?url=https://youtu.be/aqz-KE-bpKQ
 GET /download?url=https://youtu.be/aqz-KE-bpKQ&format=mp3
+GET /download?url=https://youtu.be/aqz-KE-bpKQ&start=00:01:00&end=00:02:30
 ```
 
 **Responses:**
