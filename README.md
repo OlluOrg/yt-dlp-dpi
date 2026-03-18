@@ -1,97 +1,37 @@
-# YouTube Downloader (Docker)
+# YouTube Downloader with DPI Bypass
 
-Инструмент для скачивания видео и аудио с YouTube из России.
+## Overview
+This project provides a tool to download videos from YouTube while bypassing DPI restrictions. It offers the flexibility to save videos in various formats and resolutions.
 
-Внутри работает [yt-dlp](https://github.com/yt-dlp/yt-dlp) в связке с [zapret/tpws](https://github.com/bol-van/zapret) для стабильного соединения с серверами YouTube.
+## Usage Instructions
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/bartweimann80540g/yt-dlp-dpi.git
+   cd yt-dlp-dpi
+   ```
+2. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run the downloader:
+   ```bash
+   python downloader.py [VIDEO_URL] [OPTIONS]
+   ```
+   Replace `[VIDEO_URL]` with the link to the desired YouTube video and `[OPTIONS]` with any specific download options you might need.
 
-## Использование
+## API Documentation
+The API provides endpoints for the following functionalities:
+- **Download Video**: Initiates the download of a specified video.
+- **List Available Formats**: Retrieves a list of available formats for the specified video.
 
-### Веб-интерфейс
+Refer to the `api.py` file for detailed endpoint specifications and methods.
 
-```bash
-docker compose up
-```
+## Environment Variables
+To configure the downloader, set the following environment variables:
+- `VIDEO_FORMAT`: Specifies the format for downloaded videos (e.g., `mp4`, `mkv`).
+- `DOWNLOAD_PATH`: Sets the default path where downloaded files will be saved.
 
-Открыть в браузере: `http://localhost:8080`
+Make sure to export these variables in your terminal before running the downloader.
 
-Вставить ссылку, выбрать формат — файл скачается напрямую в браузер.
-
-### Командная строка
-
-```bash
-# Видео (MP4)
-docker run --rm --network=host -v "${PWD}/downloads:/downloads" zapret-discord-youtube "https://www.youtube.com/watch?v=..."
-
-# Аудио (MP3)
-docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="-x --audio-format mp3" zapret-discord-youtube "https://www.youtube.com/watch?v=..."
-```
-
-Файлы сохраняются в папку `./downloads/`.
-
-## Сборка
-
-```bash
-docker build -t zapret-discord-youtube .
-```
-
-Всё необходимое скачивается автоматически во время сборки.
-
-## REST API
-
-### `GET /`
-Веб-форма для скачивания через браузер.
-
----
-
-### `GET /download`
-
-Скачивает видео или аудио и отдаёт файл напрямую в ответе.
-
-**Параметры запроса:**
-
-| Параметр | Обязательный | Значения | По умолчанию | Описание |
-|---|---|---|---|---|
-| `url` | да | любая ссылка yt-dlp | — | Ссылка на видео |
-| `format` | нет | `mp4`, `mp3` | `mp4` | Формат файла |
-
-**Примеры:**
-
-```
-GET /download?url=https://www.youtube.com/watch?v=...
-GET /download?url=https://www.youtube.com/watch?v=...&format=mp3
-```
-
-**Ответы:**
-
-| Код | Описание |
-|---|---|
-| `200` | Файл в теле ответа (`Content-Disposition: attachment`) |
-| `400` | Не передан параметр `url` |
-| `500` | Ошибка скачивания |
-
-**Заголовки ответа при успехе:**
-```
-Content-Type: video/mp4  |  audio/mpeg
-Content-Disposition: attachment; filename="<название видео>.<ext>"
-Content-Length: <размер в байтах>
-```
-
-## Переменные окружения
-
-| Переменная | По умолчанию | Описание |
-|---|---|---|
-| `SERVER_PORT` | `8080` | Порт веб-интерфейса |
-| `TPWS_PORT` | `1080` | Порт внутреннего SOCKS5-прокси |
-| `OUTPUT_DIR` | `/downloads` | Папка для сохранения файлов |
-| `YT_DLP_OPTS` | — | Дополнительные флаги yt-dlp |
-
-## Требования
-
-- Docker
-- Linux-хост или WSL2
-
-## Основано на
-
-- [bol-van/zapret](https://github.com/bol-van/zapret)
-- [Flowseal/zapret-discord-youtube](https://github.com/Flowseal/zapret-discord-youtube)
-- [yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.
