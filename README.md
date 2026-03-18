@@ -20,10 +20,10 @@ docker compose up
 
 ```bash
 # Видео (MP4)
-docker run --rm --network=host -v "${PWD}/downloads:/downloads" zapret-discord-youtube "https://www.youtube.com/watch?v=..."
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" ghcr.io/olluorg/yt-dlp-dpi:latest "https://www.youtube.com/watch?v=..."
 
 # Аудио (MP3)
-docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="-x --audio-format mp3" zapret-discord-youtube "https://www.youtube.com/watch?v=..."
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" -e YT_DLP_OPTS="-x --audio-format mp3" ghcr.io/olluorg/yt-dlp-dpi:latest "https://www.youtube.com/watch?v=..."
 ```
 
 Файлы сохраняются в папку `./downloads/`.
