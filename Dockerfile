@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         ca-certificates \
         python3 \
+        python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /tmp/zapret/nfq/nfqws  /usr/local/bin/nfqws
@@ -40,17 +41,8 @@ RUN chmod +x /usr/local/bin/nfqws /usr/local/bin/tpws
 RUN update-alternatives --set iptables  /usr/sbin/iptables-legacy \
     && update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
-# ─── yt-dlp (standalone binary, architecture-aware) ───────────────────────────
-ARG TARGETARCH
-RUN case "$TARGETARCH" in \
-        amd64) BINARY=yt-dlp_linux ;; \
-        arm64) BINARY=yt-dlp_linux_aarch64 ;; \
-        arm)   BINARY=yt-dlp_linux_armv7l ;; \
-        *)     BINARY=yt-dlp_linux ;; \
-    esac \
-    && curl -fsSL "https://github.com/yt-dlp/yt-dlp/releases/latest/download/${BINARY}" \
-       -o /usr/local/bin/yt-dlp \
-    && chmod +x /usr/local/bin/yt-dlp
+# ─── yt-dlp (via pip, works on all architectures) ─────────────────────────────
+RUN pip3 install --no-cache-dir --break-system-packages yt-dlp
 
 VOLUME ["/downloads"]
 
