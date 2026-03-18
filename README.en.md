@@ -106,7 +106,28 @@ Content-Length: <size in bytes>
 | `TPWS_PORT` | `18080` | Internal SOCKS5 proxy port |
 | `TPWS_OPTS` | `--split-pos=1 --oob=tls` | DPI bypass options. For macOS/servers outside Russia: `""` |
 | `OUTPUT_DIR` | `/downloads` | Output directory for saved files |
+| `COOKIES_FILE` | `/cookies.txt` | Path to cookies file inside the container |
 | `YT_DLP_OPTS` | — | Extra yt-dlp flags |
+
+## Cookies (bot check bypass)
+
+YouTube may require authentication. Export cookies from your browser and pass them to the container:
+
+1. Install the [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc) extension for Chrome or [cookies.txt](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) for Firefox
+2. Open youtube.com and sign in
+3. Export cookies to a `cookies.txt` file
+4. Pass the file when running:
+
+```bash
+# Command line
+docker run --rm --network=host -v "${PWD}/downloads:/downloads" -v "${PWD}/cookies.txt:/cookies.txt:ro" ghcr.io/olluorg/yt-dlp-dpi:latest "https://youtu.be/aqz-KE-bpKQ"
+```
+
+For the web interface, add to `docker-compose.yml`:
+```yaml
+volumes:
+  - ./cookies.txt:/cookies.txt:ro
+```
 
 ## Requirements
 

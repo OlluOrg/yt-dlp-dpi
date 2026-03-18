@@ -222,12 +222,20 @@ else
         [[ $NFQUEUE_ACTIVE -eq 1 ]] && echo " + nfqws (NFQUEUE)" || echo " (tpws only)"
     )"
 
+    COOKIES_FILE="${COOKIES_FILE:-/cookies.txt}"
+    COOKIES_ARG=""
+    if [[ -f "$COOKIES_FILE" ]]; then
+        COOKIES_ARG="--cookies $COOKIES_FILE"
+        echo "[yt-dlp] Using cookies: $COOKIES_FILE"
+    fi
+
     # shellcheck disable=SC2086
     yt-dlp \
         --proxy "socks5://127.0.0.1:${TPWS_PORT}" \
         --output "$OUTPUT_DIR/%(title)s.%(ext)s" \
         --merge-output-format mp4 \
         --no-playlist \
+        ${COOKIES_ARG} \
         ${YT_DLP_OPTS:-} \
         "$@"
 

@@ -17,8 +17,9 @@ import tempfile
 import urllib.parse
 import uuid
 
-TPWS_PORT  = int(os.environ.get("TPWS_PORT",  "1080"))
+TPWS_PORT   = int(os.environ.get("TPWS_PORT",   "1080"))
 SERVER_PORT = int(os.environ.get("SERVER_PORT", "8080"))
+COOKIES_FILE = os.environ.get("COOKIES_FILE", "/cookies.txt")
 
 HTML = """\
 <!DOCTYPE html>
@@ -91,6 +92,9 @@ class VideoHandler(http.server.BaseHTTPRequestHandler):
                 "--no-playlist",
                 "--no-warnings",
             ]
+            if os.path.isfile(COOKIES_FILE):
+                cmd += ["--cookies", COOKIES_FILE]
+                logging.info("[%s] [%s] using cookies file=%s", req_id, client, COOKIES_FILE)
             if fmt == "mp3":
                 cmd += ["-x", "--audio-format", "mp3"]
             else:
