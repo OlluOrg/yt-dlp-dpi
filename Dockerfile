@@ -61,7 +61,7 @@ COPY server.py     /app/server.py
 RUN chmod +x /entrypoint.sh
 
 ENV NFQUEUE_NUM=200
-ENV TPWS_PORT=1080
+ENV TPWS_PORT=18080
 ENV SERVER_PORT=8080
 
 ENTRYPOINT ["/entrypoint.sh"]

@@ -159,13 +159,27 @@ run_nfqws() {
 echo "[zapret] Starting tpws SOCKS5 on 127.0.0.1:${TPWS_PORT}..."
 run_tpws &
 TPWS_PID=$!
-sleep 0.5
 
-if ! kill -0 "$TPWS_PID" 2>/dev/null; then
-    echo "[zapret] ERROR: tpws failed to start." >&2
+# Ждём пока порт реально займётся (до 5 секунд)
+TPWS_READY=0
+for i in $(seq 1 10); do
+    sleep 0.5
+    if ! kill -0 "$TPWS_PID" 2>/dev/null; then
+        echo "[zapret] ERROR: tpws exited (port ${TPWS_PORT} may be already in use)" >&2
+        echo "[zapret] Try setting a different TPWS_PORT, e.g.: -e TPWS_PORT=18080" >&2
+        exit 1
+    fi
+    if ss -tlnp 2>/dev/null | grep -q ":${TPWS_PORT} "; then
+        TPWS_READY=1
+        break
+    fi
+done
+
+if [[ $TPWS_READY -eq 0 ]]; then
+    echo "[zapret] ERROR: tpws did not bind to port ${TPWS_PORT} within 5 seconds" >&2
     exit 1
 fi
-echo "[zapret] tpws running (pid=$TPWS_PID)"
+echo "[zapret] tpws running (pid=$TPWS_PID, port=$TPWS_PORT)"
 
 # ─── Попытка запустить nfqws (опционально, нужен --privileged) ────────────────
 
